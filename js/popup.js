@@ -1,9 +1,8 @@
 
-const GPT_KEY = "put your key here";
+const GPT_KEY = "put your code here";
 
 var inputBox = document.querySelector('#input-box');
 var sendButton = document.querySelector('#send-button');
-// transcript = await getTranscriptStr();
 var messageList;
 
 
@@ -48,7 +47,7 @@ async function getRespond(message){
                 "model": "gpt-3.5-turbo",
                 "messages":messageList,
                 "temperature": 0.5,
-                "max_tokens": 100,
+                "max_tokens": 200,
                 "stop": null
             })
           })
