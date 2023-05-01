@@ -1,6 +1,7 @@
-const GPT_KEY = "your key";
+const GPT_KEY = "enter your key";
 var inputBox = document.querySelector('#input-box');
 var sendButton = document.querySelector('#send-button');
+var messageList=[];
 
 window.addEventListener('load', function(){
     var chatArea = document.querySelector('#chat-area');
@@ -42,6 +43,11 @@ async function getRespond(message){
     //         console.log(data);
     //     })
     //     .catch(error => console.error(error))
+    let question = {
+        "role": "user",
+        "content": message
+    };
+    messageList.push(question);
 
     await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
@@ -51,7 +57,7 @@ async function getRespond(message){
             },
             body: JSON.stringify({
                 "model": "gpt-3.5-turbo",
-                "messages":[{ "role": "user", "content":message}],
+                "messages":messageList,
                 "temperature": 0.5,
                 "max_tokens": 100,
                 "stop": null
@@ -64,6 +70,11 @@ async function getRespond(message){
             let data = JSON.parse(jsonString).choices[0].message.content;
             console.log(data);
             addMessage(data,true);
+            let answer = {
+                "role": "assistant",
+                "content": data
+            };
+            messageList.push(answer);
           })
     // return message;
 }
@@ -71,13 +82,12 @@ async function getRespond(message){
 sendButton.addEventListener('click', async() =>{
     // 获取输入框中的文本
     var message = inputBox.value;
+    // 清空输入框
+    inputBox.value = '';
     // 将消息显示在聊天记录区域
     addMessage(message,false);
     console.log(message);
     if(message!=""){
         let respond = await getRespond(message);
-        // addMessage(respond,true);
     }
-    // 清空输入框
-    inputBox.value = '';
 });
