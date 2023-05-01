@@ -23,6 +23,12 @@
     float: left;
 }
 
+.chat-warning {
+    background-color: #bc0e0e;
+    color: #fff;
+    float: left;
+}
+
 .chat-right {
     background-color: #007bff;
     color: #fff;

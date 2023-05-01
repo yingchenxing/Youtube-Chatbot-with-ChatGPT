@@ -1,6 +1,6 @@
-console.log($);
 
-const GPT_KEY = "enter your key here";
+const GPT_KEY = "put your key here";
+
 var inputBox = document.querySelector('#input-box');
 var sendButton = document.querySelector('#send-button');
 // transcript = await getTranscriptStr();
@@ -13,17 +13,19 @@ window.addEventListener('load', function(){
     chatArea.innerHTML = sessionStorage.getItem('chat-history') || '';
 });
 
-function addMessage(message,isAnswer){
+function addMessage(message,type){
     if(message==""){
         return;
     }
     var chatArea = document.querySelector('#chat-area');
     var chatBox = document.createElement('div');
     chatBox.classList.add('chat-box');
-    if(isAnswer){
+    if(type==0){
         chatBox.innerHTML = '<br /><br /><div class="chat-bubble chat-left">' + message + '</div>';
-    }else{
+    }else if(type==1){
         chatBox.innerHTML = '<br /><br /><div class="chat-bubble chat-right">' + message + '</div>';
+    }else{
+        chatBox.innerHTML = '<br /><br /><div class="chat-bubble chat-warning">' + message + '</div>';
     }
     chatArea.appendChild(chatBox);
     sessionStorage.setItem('chat-history', chatArea.innerHTML);
@@ -52,16 +54,21 @@ async function getRespond(message){
           })
           .then(async response => {
             console.log(response);
-            const jsonString = await response.body.getReader().read().then(({value}) => new TextDecoder().decode(value));
-            console.log(jsonString);
-            let data = JSON.parse(jsonString).choices[0].message.content;
-            console.log(data);
-            addMessage(data,true);
-            let answer = {
-                "role": "system",
-                "content": data
-            };
-            messageList.push(answer);
+            if(response.ok){
+                const jsonString = await response.body.getReader().read().then(({value}) => new TextDecoder().decode(value));
+                let data = JSON.parse(jsonString).choices[0].message.content;
+                console.log(data);
+                addMessage(data,0);
+                let answer = {
+                    "role": "system",
+                    "content": data
+                };
+                messageList.push(answer);
+            }else if(response.status==401){
+                addMessage("please configure the correct key ",2);
+            }else if(response.status==400){
+                addMessage("Sorry! The video is too long ㄟ( ▔, ▔ )ㄏ",2);
+            }
           })
     // return message;
 }
@@ -72,7 +79,7 @@ sendButton.addEventListener('click', async() =>{
     // 清空输入框
     inputBox.value = '';
     // 将消息显示在聊天记录区域
-    addMessage(message,false);
+    addMessage(message,1);
     console.log(message);
     if(message!=""){
         await getRespond(message);
