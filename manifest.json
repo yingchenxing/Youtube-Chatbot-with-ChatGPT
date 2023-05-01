@@ -12,7 +12,7 @@
     ],
     "content_scripts": [{
         "matches": ["https://www.youtube.com/watch*"],
-        "js": ["jquery-3.6.4.js","content.js"],
+        "js": ["jquery-3.6.4.js"],
         "run_at": "document_end"
     }],
     "browser_action": {

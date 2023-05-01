@@ -1,13 +1,3 @@
-// import $  from "\jquery-3.6.4.js";
-console.log($);
-
-// var t = document.querySelector("ytd-transcript-segment-list-renderer").__data.data.initialSegments.map(t=>t.transcriptSegmentRenderer.snippet.runs[0].text);
-// console.log(t);
-// const videoPageResponse =  fetch("https://www.youtube.com/watch?v=" + videoId);
-// console.log(videoPageResponse);
-// const videoPageHtml =  videoPageResponse.text();
-// const splittedHtml = videoPageHtml.split('"captions":');
-
 async function getLangOptionsWithLink(videoId) {
   
     // Get a transcript URL
@@ -50,35 +40,34 @@ async function getRawTranscript(link) {
     }
     let search =/&#39;/g;
     return res.replace(search,"\'");
-    // return Array.from(textNodes).map(i => {
-    //     return {
-    //     start: i.getAttribute("start"),
-    //     duration: i.getAttribute("dur"),
-    //     text: i.textContent
-    //     };
-    // });
-
 }
 
-function getVideoID(){
-    // 获取当前页面的URL
-    const currentUrl = window.location.href;
+function getTabUrl() {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      if (tabs && tabs.length > 0) {
+        resolve(tabs[0].url);
+      } else {
+        reject('Cannot get tab URL');
+      }
+    });
+  });
+}
 
-    // 通过正则表达式解析视频ID
+async function getVideoID(){
+    var currentUrl=await getTabUrl();
+
     const videoIdRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     const videoIdMatch = currentUrl.match(videoIdRegex);
-    const videoId = videoIdMatch ? videoIdMatch[1] : null;
-
-    console.log(videoId); // 输出视频ID，如果无法解析则为null
+     videoId = videoIdMatch ? videoIdMatch[1] : null;
+  
     return videoId;
 }
 
-async function main(){
-    let videoId = getVideoID();
+async function getTranscriptStr(){
+    let videoId = await getVideoID();
     let langOptionsWithLink = await getLangOptionsWithLink(videoId);
-    console.log(langOptionsWithLink)
     let rawTranscript = await getRawTranscript(langOptionsWithLink[0].link);
-    console.log(rawTranscript)
+    // console.log(rawTranscript)
+    return rawTranscript.toString();
 }
-
-main();

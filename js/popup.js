@@ -1,7 +1,11 @@
-const GPT_KEY = "enter your key";
+console.log($);
+
+const GPT_KEY = "enter your key here";
 var inputBox = document.querySelector('#input-box');
 var sendButton = document.querySelector('#send-button');
-var messageList=[];
+// transcript = await getTranscriptStr();
+var messageList;
+
 
 window.addEventListener('load', function(){
     var chatArea = document.querySelector('#chat-area');
@@ -26,23 +30,6 @@ function addMessage(message,isAnswer){
 }
 
 async function getRespond(message){
-    // await fetch('https://posthere.io/api/2cfb-4cde-974f', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         message: message
-    //     })
-    //     })
-    //     .then(response => {
-    //         console.log(response.url);
-    //         addMessage(response.url,true);
-    //     })
-    //     .then(data => {
-    //         console.log(data);
-    //     })
-    //     .catch(error => console.error(error))
     let question = {
         "role": "user",
         "content": message
@@ -71,7 +58,7 @@ async function getRespond(message){
             console.log(data);
             addMessage(data,true);
             let answer = {
-                "role": "assistant",
+                "role": "system",
                 "content": data
             };
             messageList.push(answer);
@@ -88,6 +75,18 @@ sendButton.addEventListener('click', async() =>{
     addMessage(message,false);
     console.log(message);
     if(message!=""){
-        let respond = await getRespond(message);
+        await getRespond(message);
     }
 });
+
+async function main(){
+    transcript = await getTranscriptStr();
+    console.log(typeof transcript);
+    let initial = {
+        "role": "assistant",
+        "content": transcript
+    };
+    console.log(initial);
+    messageList=[initial];
+}
+main();
