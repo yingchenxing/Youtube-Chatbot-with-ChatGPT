@@ -1,6 +1,6 @@
 ## YouTube Chat Bot
 
-This is a Google Chrome extension that allows you to chat on YouTube videos using a bot. The bot works by extracting the transcript of the video you are watching and using it to generate responses to your messages.
+This is a Google Chrome extension that allows you to chat on YouTube videos using CharGPT API. The bot works by extracting the transcript of the video you are watching and using it to generate responses to your questions.
 
 ### Installation
 
@@ -10,6 +10,7 @@ To install the extension, follow these steps:
 2. Open Chrome and navigate to `chrome://extensions`
 3. Enable Developer mode (toggle switch in the top right corner)
 4. Click "Load unpacked" and select the folder containing the extension files
+5. Fill the `GPT_KEY` field with your own chatGPT key in `js/popup.js`
 
 ### Usage
 
